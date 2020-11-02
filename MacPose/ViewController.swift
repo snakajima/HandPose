@@ -8,6 +8,7 @@
 
 import AppKit
 import AVFoundation
+import Vision
 
 enum AppError: Error {
     case captureSessionSetup(reason: String)
@@ -26,8 +27,9 @@ enum AppError: Error {
 
 class ViewController: NSViewController {
     private let videoDataOutputQueue = DispatchQueue(label: "CameraFeedDataOutput", qos: .userInteractive)
-    var captureSession: AVCaptureSession?
-    var gestureEnabled = false
+    private var captureSession: AVCaptureSession?
+    private var gestureEnabled = false
+    private var handPoseRequest:VNDetectHumanHandPoseRequest?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,11 +89,30 @@ class ViewController: NSViewController {
     @IBAction func toggleGesture(_ sender:Any) {
         gestureEnabled = !gestureEnabled
         print("toggleGesture", gestureEnabled)
+        if gestureEnabled {
+            handPoseRequest = VNDetectHumanHandPoseRequest()
+        } else {
+            handPoseRequest = nil
+        }
     }
 }
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // no operation
+        guard let request = handPoseRequest else {
+            return
+        }
+        let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer, orientation: .up, options: [:])
+        do {
+            try handler.perform([request])
+            let results = request.results
+            if let count = results?.count, count > 0 {
+                print("results.count", count)
+            }
+        } catch {
+            print("Vision Error", error.localizedDescription)
+        }
+
     }
 }
