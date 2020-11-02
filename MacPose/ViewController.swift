@@ -86,9 +86,10 @@ class ViewController: NSViewController {
         }
     }
     
-    @IBAction func toggleGesture(_ sender:Any) {
+    @IBAction func toggleGesture(_ sender:NSMenuItem) {
         gestureEnabled = !gestureEnabled
         print("toggleGesture", gestureEnabled)
+        sender.state = gestureEnabled ? .on : .off
         if gestureEnabled {
             handPoseRequest = VNDetectHumanHandPoseRequest()
         } else {

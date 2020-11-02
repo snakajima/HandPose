@@ -596,7 +596,8 @@
                                                 </items>
                                             </menu>
                                         </menuItem>
-                                        <menuItem title="Gesture" keyEquivalent="z" id="siv-pC-dlL" userLabel="Gesture">
+                                        <menuItem title="Gesture" id="siv-pC-dlL" userLabel="Gesture">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="toggleGesture:" target="Ady-hI-5gd" id="cY9-0I-Pei"/>
                                             </connections>
